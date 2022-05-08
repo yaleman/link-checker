@@ -19,4 +19,3 @@ def test_local(simplehttpserver: Any) -> None: # pylint: disable=unused-argument
     result = runner.invoke(cli, ["http://localhost:8000"] )
     assert result
     print(result.output)
-
