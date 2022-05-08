@@ -104,7 +104,4 @@ def cli(url: Optional[str]=None) -> None:
     """ Link checker pulls a given URL then goes looking for links off that page, then checks if they load. """
     if url is None:
         return
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(
-        process_page(url)
-    )
+    asyncio.run(process_page(url))
