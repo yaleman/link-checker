@@ -1,0 +1,9 @@
+{
+  "auto_merge" : [
+    "aiohttp",
+    "beautifulsoup4",
+    "click",
+    "lxml",
+    "requests"
+  ]
+}
