@@ -60,18 +60,30 @@ def find_links(
         results_to_return.append(link["href"])
     return results_to_return
 
-async def check_link(target_link: bs4.element.Tag) -> bool:
+async def check_link(target_link: bs4.element.Tag, method="HEAD") -> bool:
     """ checks an individual link """
 
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15"
+    }
     try:
         async with aiohttp.ClientSession() as check_session:
-            async with check_session.head(target_link) as response:
+            async with check_session.request(method, target_link, headers=headers) as response:
                 if response.status <= 400:
                     logger.success("{} {}", response.status, target_link, )
                     return True
-                logger.error("{} {}", response.status, target_link, )
+                if response.status == 405:
+                    logger.warning("{} {} - HEAD refused - retrying with GET", response.status, target_link, )
+                    if method == "HEAD":
+                        result = await check_link(target_link, method="GET")
+                        return result
+                if response.status == 999:
+                    logger.warning("{} {} - probably linkedin being weird - retrying with get", response.status, target_link, )
+                    if method == "HEAD":
+                        result = await check_link(target_link, method="GET")
+                        return result
+                logger.error("{} = {} {}", method, response.status, target_link, )
                 return False
-
     except Exception as error: # pylint: disable=broad-except
         logger.error("Failed to pull {}: {} - {}", target_link, type(error), error)
     return False
