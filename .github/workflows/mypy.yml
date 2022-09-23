@@ -16,10 +16,10 @@ jobs:
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: '3.10'
       - name: Running mypy
         run: |
           python --version
           python -m pip install --quiet --no-cache-dir --upgrade poetry
           poetry install
-          poetry run mypy $(basename $(pwd) | sed -E 's/-/_/g') tests/
+          poetry run mypy link_checker tests/
