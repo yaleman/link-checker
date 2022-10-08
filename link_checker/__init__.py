@@ -6,8 +6,8 @@ from typing import List, Optional, Union
 from urllib.parse import urlparse
 
 import aiohttp
-from bs4 import BeautifulSoup
-import bs4.element  # type: ignore
+from bs4 import BeautifulSoup # type: ignore[import]
+import bs4.element # type: ignore[import]
 import click
 from loguru import logger
 
