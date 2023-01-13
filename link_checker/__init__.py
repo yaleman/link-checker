@@ -41,7 +41,7 @@ def find_links(
     object_type: str = "a",
 ) -> List[bs4.element.Tag]:
     """finds the links and checks them"""
-    soup = BeautifulSoup(page_content, "lxml")
+    soup = BeautifulSoup(page_content, features="lxml")
     links = soup.find_all(object_type)
     results_to_return = []
     for link in links:
@@ -128,8 +128,11 @@ async def process_page(target_url: str) -> None:
         links = find_links(target_url, html)
 
         link_results = await asyncio.gather(*[check_link(link) for link in links])
-        logger.debug(link_results)
-
+        if not all(link_results):
+            logger.error("One of the links failed to validate!")
+            sys.exit(1)
+        else:
+            logger.success("All good!")
 
 @click.command()
 @click.argument("url")
